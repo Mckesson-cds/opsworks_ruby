@@ -4,7 +4,7 @@
     <% pid_file = "#{@deploy_to}/shared/pids/shoryuken_#{identifier}.pid" %>
     <% syslog = !!@out[:syslog] ? "2>&1 | logger -t shoryuken-#{identifier}" : '' %>
     <% to_require = @out[:require].present? ? " -r #{File.join(@deploy_to, 'current', @out[:require])}" : '' %>
-    <% require_rails = @out[:require_rails].present? ? ' -R' : '' %>
+    <% require_rails = @out[:require_rails] ? ' -R' : '' %>
 
     check process shoryuken_<%= identifier.to_s %>
     with pidfile <%= pid_file.to_s %>

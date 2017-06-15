@@ -5,7 +5,7 @@ module Drivers
     class Shoryuken < Drivers::Worker::Base
       adapter :shoryuken
       allowed_engines :shoryuken
-      output filter: %i[config process_count require syslog]
+      output filter: %i[config process_count require syslog require_rails]
       packages 'monit'
 
       def configure
