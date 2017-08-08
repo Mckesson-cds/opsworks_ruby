@@ -111,9 +111,9 @@ describe 'opsworks_ruby::configure' do
     describe file('/etc/monit/conf.d/shoryuken_dummy_project.monitrc') do
       its(:content) do
         should include 'bundle exec shoryuken -C /srv/www/dummy_project/shared/config/shoryuken_1.yml ' \
-                        '-P /srv/www/dummy_project/shared/pids/shoryuken_dummy_project-1.pid -R'
+                        '-P /run/lock/shoryuken_dummy_project-1.pid -R'
       end
-      its(:content) { should include 'kill -s TERM /srv/www/dummy_project/shared/pids/shoryuken_dummy_project-1.pid' }
+      its(:content) { should include 'kill -s TERM /run/lock/shoryuken_dummy_project-1.pid' }
     end
   end
 end
