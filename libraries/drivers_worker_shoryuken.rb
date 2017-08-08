@@ -48,8 +48,8 @@ module Drivers
       def quiet_shoryuken
         (1..process_count).each do |process_number|
           pid_file = pid_file(process_number)
-          Chef::Log.info("Quiet shoryuken process if exists: #{pid_file}")
           next unless File.file?(pid_file) && pid_exists?(File.open(pid_file).read)
+          Chef::Log.info("Quiet shoryuken process #{pid_file}")
           context.execute "/bin/su - #{node['deployer']['user']} -c 'kill -s USR1 `cat #{pid_file}`'"
         end
       end
@@ -61,7 +61,7 @@ module Drivers
           # timeout = (out[:config]['timeout'] || 8).to_i
 
           next unless File.file?(pid_file) && pid_exists?(File.open(pid_file).read)
-
+          Chef::Log.info("Kill shoryuken process: #{pid_file}")
           context.execute(
             "/bin/su - #{node['deployer']['user']} -c 'cd #{File.join(deploy_dir(app), 'current')} && " \
             "#{environment.map { |k, v| "#{k}=\"#{v}\"" }.join(' ')} " \
@@ -70,8 +70,9 @@ module Drivers
         end
       end
 
+      # Store pid file in /run/lock, which is usually memory backed and won't persist across reboots
       def pid_file(process_number)
-        "#{deploy_dir(app)}/shared/pids/shoryuken_#{app['shortname']}-#{process_number}.pid"
+        "/run/lock/shoryuken_#{app['shortname']}-#{process_number}.pid"
       end
 
       def pid_exists?(pid)
