@@ -102,18 +102,18 @@ describe 'opsworks_ruby::configure' do
   end
 
   context 'worker' do
-    describe file('/srv/www/dummy_project/shared/config/shoryuken_1.yml') do
+    describe file('/srv/www/dummy_project/shared/config/shoryuken-dummy_project-1.yml') do
       its(:content) { should include 'concurrency: 6' }
       its(:content) { should include 'verbose: true' }
       its(:content) { should_not include 'queues:' }
     end
 
-    describe file('/etc/monit/conf.d/shoryuken_dummy_project.monitrc') do
+    describe file('/etc/monit/conf.d/shoryuken-dummy_project-1.monitrc') do
       its(:content) do
-        should include 'bundle exec shoryuken -C /srv/www/dummy_project/shared/config/shoryuken_1.yml ' \
-                        '-P /run/lock/shoryuken_dummy_project-1.pid -R'
+        should include 'bundle exec shoryuken -C /srv/www/dummy_project/shared/config/shoryuken-dummy_project-1.yml ' \
+                        '-P /run/lock/shoryuken-dummy_project-1.pid -R'
       end
-      its(:content) { should include 'kill -s TERM $(cat /run/lock/shoryuken_dummy_project-1.pid)' }
+      its(:content) { should include 'kill -s TERM $(cat /run/lock/shoryuken-dummy_project-1.pid)' }
     end
   end
 end

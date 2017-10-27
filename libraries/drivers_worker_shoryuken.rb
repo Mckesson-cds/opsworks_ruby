@@ -36,7 +36,7 @@ module Drivers
         config = configuration
 
         (1..process_count).each do |process_number|
-          context.template File.join(deploy_to, File.join('shared', 'config', "shoryuken_#{process_number}.yml")) do
+          context.template File.join(deploy_to, File.join('shared', 'config', "shoryuken-#{app['shortname']}-#{process_number}.yml")) do
             owner node['deployer']['user']
             group www_group
             source 'shoryuken.conf.yml.erb'
@@ -50,7 +50,7 @@ module Drivers
           pid_file = pid_file(process_number)
           next unless File.file?(pid_file) && pid_exists?(File.open(pid_file).read)
           Chef::Log.info("Quiet shoryuken process #{pid_file}")
-          context.execute "/bin/su - #{node['deployer']['user']} -c 'kill -s USR1 `cat #{pid_file}`'"
+          context.execute "/bin/su - #{node['deployer']['user']} -c 'kill -s USR1 $(cat #{pid_file})'"
         end
       end
 
@@ -65,14 +65,14 @@ module Drivers
           context.execute(
             "/bin/su - #{node['deployer']['user']} -c 'cd #{File.join(deploy_dir(app), 'current')} && " \
             "#{environment.map { |k, v| "#{k}=\"#{v}\"" }.join(' ')} " \
-            "kill -s TERM `cat #{pid_file}`'"
+            "kill -s TERM $(cat #{pid_file})'"
           )
         end
       end
 
       # Store pid file in /run/lock, which is usually memory backed and won't persist across reboots
       def pid_file(process_number)
-        "/run/lock/shoryuken_#{app['shortname']}-#{process_number}.pid"
+        "/run/lock/shoryuken-#{app['shortname']}-#{process_number}.pid"
       end
 
       def pid_exists?(pid)
