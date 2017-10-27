@@ -36,7 +36,8 @@ module Drivers
         config = configuration
 
         (1..process_count).each do |process_number|
-          context.template File.join(deploy_to, File.join('shared', 'config', "shoryuken_#{app['shortname']}-#{process_number}.yml")) do
+          filename = "shoryuken_#{app['shortname']}-#{process_number}.yml"
+          context.template File.join(deploy_to, 'shared', 'config', filename) do
             owner node['deployer']['user']
             group www_group
             source 'shoryuken.conf.yml.erb'
