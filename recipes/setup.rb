@@ -57,6 +57,18 @@ end
 execute 'yum-config-manager --enable epel' if node['platform_family'] == 'rhel'
 
 every_enabled_application do |application|
+  # create directories needed by an application
+  create_deploy_dir(application, File.join('shared'))
+  create_deploy_dir(application, File.join('shared', 'config'))
+  create_deploy_dir(application, File.join('shared', 'log'))
+  create_deploy_dir(application, File.join('shared', 'scripts'))
+  create_deploy_dir(application, File.join('shared', 'sockets'))
+  create_deploy_dir(application, File.join('shared', 'vendor/bundle'))
+  create_dir("/run/lock/#{application['shortname']}")
+  link File.join(deploy_dir(application), 'shared', 'pids') do
+    to "/run/lock/#{application['shortname']}"
+  end
+
   databases = []
   every_enabled_rds(self, application) do |rds|
     databases.push(Drivers::Db::Factory.build(self, application, rds: rds))
