@@ -13,8 +13,12 @@ module Drivers
         'puma.rb'
       end
 
+      # This is the command used to start the puma server. The ROOT_PATH
+      # environment variable gets interpolated inside the rendered service
+      # script, so the braces need to be escaped here to avoid early
+      # interpolation.
       def appserver_command
-        'puma -C #{ROOT_PATH}/shared/config/puma.rb' # rubocop:disable Lint/InterpolationCheck
+        "puma -C \#{ROOT_PATH}/shared/config/puma.rb" # rubocop:disable Lint/InterpolationCheck
       end
     end
   end

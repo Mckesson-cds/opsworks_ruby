@@ -196,7 +196,7 @@ describe 'opsworks_ruby::configure' do
       # rubocop:disable Lint/InterpolationCheck
       expect(chef_run)
         .to render_file("/srv/www/#{aws_opsworks_app['shortname']}/shared/scripts/unicorn.service")
-        .with_content('unicorn_rails --env #{DEPLOY_ENV} --daemonize -c #{ROOT_PATH}/shared/config/unicorn.conf')
+        .with_content("unicorn_rails --env \#{DEPLOY_ENV} --daemonize -c \#{ROOT_PATH}/shared/config/unicorn.conf")
       # rubocop:enable Lint/InterpolationCheck
     end
 
@@ -571,7 +571,7 @@ describe 'opsworks_ruby::configure' do
       # rubocop:disable Lint/InterpolationCheck
       expect(chef_run)
         .to render_file("/srv/www/#{aws_opsworks_app['shortname']}/shared/scripts/puma.service")
-        .with_content('puma -C #{ROOT_PATH}/shared/config/puma.rb')
+        .with_content("puma -C \#{ROOT_PATH}/shared/config/puma.rb")
       # rubocop:enable Lint/InterpolationCheck
     end
 
@@ -1004,10 +1004,12 @@ describe 'opsworks_ruby::configure' do
       expect(chef_run)
         .to render_file("/srv/www/#{aws_opsworks_app['shortname']}/shared/scripts/thin.service")
         .with_content('DEPLOY_ENV="staging"')
+
+      # rubocop < 0.52.1 doesn't handle escaped interpolation right
       # rubocop:disable Lint/InterpolationCheck
       expect(chef_run)
         .to render_file("/srv/www/#{aws_opsworks_app['shortname']}/shared/scripts/thin.service")
-        .with_content('thin -C #{ROOT_PATH}/shared/config/thin.yml')
+        .with_content("thin -C \#{ROOT_PATH}/shared/config/thin.yml")
       # rubocop:enable Lint/InterpolationCheck
     end
 
