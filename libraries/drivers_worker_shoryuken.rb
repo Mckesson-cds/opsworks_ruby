@@ -38,7 +38,7 @@ module Drivers
             owner node['deployer']['user']
             group www_group
             source 'shoryuken.conf.yml.erb'
-            variables(config: configuration)
+            variables config: out[:config]
           end
         end
       end
@@ -78,10 +78,6 @@ module Drivers
         true
       rescue Errno::ESRCH
         false
-      end
-
-      def configuration
-        JSON.parse(out[:config].to_json, symbolize_names: true)
       end
     end
   end
