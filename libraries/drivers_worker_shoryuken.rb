@@ -38,7 +38,7 @@ module Drivers
             owner node['deployer']['user']
             group www_group
             source 'shoryuken.conf.yml.erb'
-            variables config: configuration
+            variables(config: configuration)
           end
         end
       end
