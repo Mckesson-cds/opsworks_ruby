@@ -32,16 +32,13 @@ module Drivers
       private
 
       def add_shoryuken_config
-        deploy_to = deploy_dir(app)
-        config = configuration
-
         (1..process_count).each do |process_number|
-          filename = "shoryuken_#{app['shortname']}-#{process_number}.yml"
-          context.template File.join(deploy_to, 'shared', 'config', filename) do
+          context.template File.join(deploy_dir(app), 'shared', 'config',
+                                     "shoryuken_#{app['shortname']}-#{process_number}.yml") do
             owner node['deployer']['user']
             group www_group
             source 'shoryuken.conf.yml.erb'
-            variables config: config
+            variables config: configuration
           end
         end
       end
