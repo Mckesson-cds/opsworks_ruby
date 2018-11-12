@@ -14,10 +14,12 @@ module Drivers
         'unicorn.conf'
       end
 
+      # This is the command used to start the unicorn_rails server. The
+      # DEPLOY_ENV environment variable gets interpolated inside the rendered
+      # service script, so the braces need to be escaped here to avoid early
+      # interpolation.
       def appserver_command
-        # rubocop:disable Lint/InterpolationCheck
-        'unicorn_rails --env #{DEPLOY_ENV} --daemonize -c #{ROOT_PATH}/shared/config/unicorn.conf'
-        # rubocop:enable Lint/InterpolationCheck
+        "unicorn_rails --env \#{DEPLOY_ENV} --daemonize -c \#{ROOT_PATH}/shared/config/unicorn.conf"
       end
     end
   end
